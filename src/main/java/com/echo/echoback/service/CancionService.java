@@ -18,7 +18,7 @@ import java.util.Optional;
 
 @Service
 public class CancionService {
-    private static final String UPLOAD_DIR = "uploads/"; // Carpeta donde se guardarán los MP3
+    private static final String UPLOAD_DIR = "src/main/resources/uploads/"; // Carpeta donde se guardarán los MP3
 
     @Autowired
     private CancionRepository cancionRepository;
