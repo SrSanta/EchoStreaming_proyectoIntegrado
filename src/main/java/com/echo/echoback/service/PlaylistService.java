@@ -7,6 +7,7 @@ import com.echo.echoback.repository.PlaylistRepository;
 import com.echo.echoback.repository.CancionRepository;
 import com.echo.echoback.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -59,6 +60,7 @@ public class PlaylistService {
     }
 
     // Eliminar una playlist por ID
+    @PreAuthorize("hasAuthority('ADMIN') or @playlistRepository.findById(#id).get().usuario.id == authentication.principal.id")
     public void eliminarPlaylist(Long id) {
         playlistRepository.deleteById(id);
     }

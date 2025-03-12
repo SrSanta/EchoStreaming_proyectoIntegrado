@@ -9,6 +9,7 @@ import com.echo.echoback.repository.UsuarioRepository;
 import com.echo.echoback.repository.CancionRepository;
 import com.echo.echoback.repository.VideoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -68,6 +69,7 @@ public class ComentarioService {
     }
 
     // Eliminar un comentario por ID
+    @PreAuthorize("hasAuthority('ADMIN') or #comentarioRepository.findById(#id).get().usuario.id == authentication.principal.id")
     public void eliminarComentario(Long id) {
         comentarioRepository.deleteById(id);
     }

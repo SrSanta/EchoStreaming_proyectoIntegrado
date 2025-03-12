@@ -2,23 +2,31 @@ package com.echo.echoback.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll() // Permitir login y registro
-                        .anyRequest().authenticated() // Proteger las demás rutas
+                        .requestMatchers("/api/artistas/**").hasAuthority("ARTISTA")
+                        .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers("/api/usuarios/**").hasAnyAuthority("USER", "ARTISTA", "ADMIN")
+//                          .requestMatchers("/api/auth/**").permitAll()
+                          .anyRequest().authenticated()
                 )
-                .csrf(csrf -> csrf.disable()) // Desactivar CSRF para permitir peticiones desde Angular
-                .cors(cors -> cors.disable()); // Configurar CORS en otro lado si es necesario
+                .formLogin(withDefaults())
+                .logout(withDefaults())
+                .csrf(csrf -> csrf.disable());
 
         return http.build();
     }

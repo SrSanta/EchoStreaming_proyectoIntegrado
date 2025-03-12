@@ -5,6 +5,7 @@ import com.echo.echoback.domain.Cancion;
 import com.echo.echoback.repository.VideoRepository;
 import com.echo.echoback.repository.CancionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,6 +28,7 @@ public class VideoService {
     private CancionRepository cancionRepository;
 
     // Guardar un video con archivo MP4
+    @PreAuthorize("hasAuthority('ARTISTA')")
     public Video guardarVideo(String titulo, Long cancionId, MultipartFile archivoVideo) throws IOException {
         // Verificar si la canción existe
         Optional<Cancion> cancionOptional = cancionRepository.findById(cancionId);
@@ -58,6 +60,7 @@ public class VideoService {
     }
 
     // Eliminar un video por ID
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void eliminarVideo(Long id) {
         videoRepository.deleteById(id);
     }

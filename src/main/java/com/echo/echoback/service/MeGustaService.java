@@ -9,6 +9,7 @@ import com.echo.echoback.repository.UsuarioRepository;
 import com.echo.echoback.repository.CancionRepository;
 import com.echo.echoback.repository.VideoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -72,6 +73,7 @@ public class MeGustaService {
     }
 
     // Eliminar un "Me Gusta"
+    @PreAuthorize("hasAuthority('ADMIN') or @meGustaRepository.findById(#id).get().usuario.id == authentication.principal.id")
     public void eliminarMeGusta(Long id) {
         meGustaRepository.deleteById(id);
     }

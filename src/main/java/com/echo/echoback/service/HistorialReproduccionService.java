@@ -9,6 +9,7 @@ import com.echo.echoback.repository.UsuarioRepository;
 import com.echo.echoback.repository.CancionRepository;
 import com.echo.echoback.repository.VideoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -57,11 +58,13 @@ public class HistorialReproduccionService {
     }
 
     // Obtener el historial de un usuario
+    @PreAuthorize("hasAuthority('ADMIN') or @historialReproduccionRepository.findById(#id).get().usuario.id == authentication.principal.id")
     public List<HistorialReproduccion> obtenerHistorialPorUsuario(Long usuarioId) {
         return historialReproduccionRepository.findByUsuarioId(usuarioId);
     }
 
     // Eliminar una entrada del historial
+    @PreAuthorize("hasAuthority('ADMIN') or @historialReproduccionRepository.findById(#id).get().usuario.id == authentication.principal.id")
     public void eliminarHistorial(Long id) {
         historialReproduccionRepository.deleteById(id);
     }

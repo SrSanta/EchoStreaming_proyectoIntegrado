@@ -1,6 +1,7 @@
 package com.echo.echoback.controller;
 
 import com.echo.echoback.domain.Usuario;
+import com.echo.echoback.impl.Rol;
 import com.echo.echoback.service.UsuarioService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,5 +57,15 @@ public class AuthController {
             response.put("authenticated", false);
         }
         return response;
+    }
+
+    @PostMapping("/register")
+    public Usuario register(@RequestBody Usuario usuario) {
+        // Solo los ADMIN pueden asignar roles diferentes a USER
+        if (usuario.getRol() == Rol.ADMIN) {
+            throw new RuntimeException("No puedes asignarte el rol ADMIN");
+        }
+
+        return usuarioService.registrarUsuario(usuario);
     }
 }

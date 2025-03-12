@@ -1,5 +1,6 @@
 package com.echo.echoback.domain;
 
+import com.echo.echoback.impl.Rol;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,7 +22,9 @@ public class Usuario {
     private String nombre;
     private String email;
     private String contrasenya;
-    private Boolean esArtista;
+
+    @Enumerated(EnumType.STRING)
+    private Rol rol;
 
     @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
     private Artista artista;

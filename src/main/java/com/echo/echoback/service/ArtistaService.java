@@ -3,9 +3,11 @@ package com.echo.echoback.service;
 
 import com.echo.echoback.domain.Artista;
 import com.echo.echoback.domain.Usuario;
+import com.echo.echoback.impl.Rol;
 import com.echo.echoback.repository.ArtistaRepository;
 import com.echo.echoback.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +21,16 @@ public class ArtistaService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    // Verificar si el usuario es un artista
+    private void verificarSiEsArtista(Long usuarioId) {
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        if (usuario.getRol() != Rol.ARTISTA) {
+            throw new RuntimeException("Acceso denegado: No eres un artista");
+        }
+    }
 
     // Registrar un artista
     public Artista registrarArtista(Artista artista) {
@@ -37,11 +49,13 @@ public class ArtistaService {
     }
 
     // Obtener todos los artistas
+    @PreAuthorize("hasAuthority('ADMIN')")
     public List<Artista> obtenerTodosLosArtistas() {
         return artistaRepository.findAll();
     }
 
     // Eliminar un artista por ID
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void eliminarArtista(Long id) {
         artistaRepository.deleteById(id);
     }

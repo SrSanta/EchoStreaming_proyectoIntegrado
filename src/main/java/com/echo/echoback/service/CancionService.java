@@ -5,6 +5,7 @@ import com.echo.echoback.domain.Artista;
 import com.echo.echoback.repository.CancionRepository;
 import com.echo.echoback.repository.ArtistaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,6 +28,7 @@ public class CancionService {
     private ArtistaRepository artistaRepository;
 
     // Guardar una canción con archivo MP3
+    @PreAuthorize("hasAuthority('ARTISTA')")
     public Cancion guardarCancion(String titulo, Long artistaId, MultipartFile archivoMp3) throws IOException {
         // Verificar si el artista existe
         Optional<Artista> artistaOptional = artistaRepository.findById(artistaId);
@@ -58,6 +60,7 @@ public class CancionService {
     }
 
     // Eliminar una canción por ID
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void eliminarCancion(Long id) {
         cancionRepository.deleteById(id);
     }
